@@ -1,0 +1,46 @@
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'Ubuntu 16.04'
+
+  steps:
+  - script: sudo apt-get install libjack-dev libasound2-dev ninja-build
+    displayName: 'Install dependencies'
+
+  - script: cmake -G Ninja .
+    displayName: 'Generate build system with cmake'
+
+  - script: ninja
+    displayName: 'Build'
+
+- job: Windows
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  steps:
+  - script: choco install -y jom
+    displayName: 'Install dependencies'
+
+  - script: |
+      call "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/Common7/Tools/VsDevCmd.bat"
+      cmake -G "NMake Makefiles JOM" .
+    displayName: 'Generate build system with cmake'
+
+  - script: |
+      call "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/Common7/Tools/VsDevCmd.bat"
+      jom
+    displayName: 'Build'
+
+- job: macOS
+  pool:
+    vmImage: 'macOS-10.13'
+
+  steps:
+  - script: brew install ninja
+    displayName: 'Install dependencies'
+
+  - script: cmake -G Ninja .
+    displayName: 'Generate build system with cmake'
+
+  - script: ninja
+    displayName: 'Build'
